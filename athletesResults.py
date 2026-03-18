@@ -4,12 +4,12 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import re
 
-def Athletes():
+def AthletesResults():
     # Load the urls from podium.csv
     try:
         podium_df = pd.read_csv(r"DATA3463-MiniProject2\out\podium.csv")
     except FileNotFoundError:
-        print("podium.csv not found. Run podium() first.")
+        print("podium.csv not found. Run podium.py first.")
         return
 
     # adding all the years the athlete got a podium finish
@@ -91,4 +91,4 @@ def Athletes():
     print("Finished Scraping. Athletes CSV created.")
 
 if __name__ == '__main__':
-    Athletes()
+    AthletesResults()

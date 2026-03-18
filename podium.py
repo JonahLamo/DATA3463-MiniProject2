@@ -20,7 +20,7 @@ def Podium():
         "/editions/72/medal"
     ]
 
-    tables = []
+    all_data = []
 
     for page in medals_pages:
         url = base_url + page
@@ -33,54 +33,35 @@ def Podium():
             table_element = soup.find('table', class_='table')
 
             if table_element:
-                # Create empty list
-                table_data = []
-                current_sport = "Unknown" # Placeholder
-
-                # Find all rows
                 rows = table_element.find_all('tr')
 
                 for row in rows:
                     # Find all header and data cells
                     cells = row.find_all(['th', 'td'])
 
-                    # Check if 
                     if len(cells) == 1:
-                        current_sport = cells[0].get_text(strip=True)
-                        continue 
-                    
-                    # Extract text from each cell
-                    row_text = [current_sport]
-                    for cell in cells:
-                        text = cell.get_text(strip=True) # clean whitespace
-                        link = cell.find('a', href=True)
+                        continue
 
-                        row_text.append(text)
+                    medal_cells = cells[1:] # skip Event column
+                    if len(medal_cells) == 6:
+                        for i in range(0, 6, 2):
+                            name_cell = medal_cells[i]
+                            noc_cell = medal_cells[i + 1]
+                            country = noc_cell.get_text(strip=True)
 
-                        if link:
-                            # Get the urls for each athlete
-                            full_url = urljoin(base_url, link['href'])
-                            row_text.append(full_url)
-                        else:
-                            row_text.append(pd.NA) # All players have links, but teams/countries do not, this allows those to be removed later easily usign dropna
+                            links = name_cell.find_all('a', href=True)
+                            if links:
+                                for link in links:
+                                    athlete_name = link.get_text(strip=True)
+                                    athlete_url = urljoin(base_url, link['href'])
 
-                    # append cells to table
-                    if len(row_text) == 15:
-                        table_data.append(row_text)
+                                    if athlete_name and athlete_name != '—':
+                                        all_data.append({
+                                            'athleteName': athlete_name,
+                                            'athleteURL': athlete_url,
+                                            'country': country
+                                        })
 
-                # Create DataFrame
-                columns = [
-                    'Sport',
-                    'Event', 'Event_url',
-                    'Gold', 'Gold_url',
-                    'NOC_G', 'NOC_G_url',
-                    'Silver', 'Silver_url',
-                    'NOC_S', 'NOC_S_url',
-                    'Bronze', 'Bronze_url',
-                    'NOC_B', 'NOC_B_url'
-                ]
-                df = pd.DataFrame(table_data, columns=columns)
-                tables.append(df)
                 print(f"Successfully scraped {url}")
             else:
                 print(f"No table found at {url}")
@@ -88,22 +69,12 @@ def Podium():
         except requests.exceptions.RequestException as e:
             print(f"Error fetching {url}: {e}")
 
-        # Implement 20 second delay, only 10 second is necessary, but this is safer.
         time.sleep(20)
 
-    year = 2010
-    for i in range(len(tables)):
-        df = tables[i]
-        df.drop(index=df.index[0], axis=0, inplace=True)
-        df = df.replace('—', pd.NA).dropna()
-        df['year'] = year
-        tables[i] = df
-        year += 4
-
-    combined_df = pd.concat(tables, ignore_index=True)
-    combined_df = combined_df.drop(['Event_url', 'NOC_G_url', 'NOC_S_url', 'NOC_B_url'], axis=1)
-
-    combined_df.to_csv(r"DATA3463-MiniProject2\out\podium.csv", index=False)
+    df = pd.DataFrame(all_data).dropna()
+    df = df.drop_duplicates(keep='last', subset=['athleteURL']) # keeps most recent information about athletes that won multiple times, ensures all urls are unique
+    df.to_csv(r"DATA3463-MiniProject2\out\podium.csv", index=False)
+    print(f"Saved {len(df)} athletes")
 
 if __name__ == '__main__':
     Podium()
