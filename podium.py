@@ -1,8 +1,9 @@
 import requests
 import time
-from bs4 import BeautifulSoup
 import pandas as pd
+from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import sqlite3
 
 def Podium():
     headers = {
@@ -25,7 +26,7 @@ def Podium():
     for page in medals_pages:
         url = base_url + page
         try:
-            response = requests.get(url, timeout=10, headers=headers)
+            response = requests.get(url, timeout=15, headers=headers)
             response.raise_for_status()
 
             # Parse Content
@@ -39,15 +40,10 @@ def Podium():
                     # Find all header and data cells
                     cells = row.find_all(['th', 'td'])
 
-                    if len(cells) == 1:
-                        continue
-
                     medal_cells = cells[1:] # skip Event column
                     if len(medal_cells) == 6:
                         for i in range(0, 6, 2):
                             name_cell = medal_cells[i]
-                            noc_cell = medal_cells[i + 1]
-                            country = noc_cell.get_text(strip=True)
 
                             links = name_cell.find_all('a', href=True)
                             if links:
@@ -58,8 +54,7 @@ def Podium():
                                     if athlete_name and athlete_name != '—':
                                         all_data.append({
                                             'athleteName': athlete_name,
-                                            'athleteURL': athlete_url,
-                                            'country': country
+                                            'athleteURL': athlete_url
                                         })
 
                 print(f"Successfully scraped {url}")
@@ -69,12 +64,15 @@ def Podium():
         except requests.exceptions.RequestException as e:
             print(f"Error fetching {url}: {e}")
 
-        time.sleep(20)
+        time.sleep(15)
 
-    df = pd.DataFrame(all_data).dropna()
-    df = df.drop_duplicates(keep='last', subset=['athleteURL']) # keeps most recent information about athletes that won multiple times, ensures all urls are unique
-    df.to_csv(r"DATA3463-MiniProject2\out\podium.csv", index=False)
-    print(f"Saved {len(df)} athletes")
+    df = pd.DataFrame(all_data).drop_duplicates(keep='last', subset=['athleteURL'])
+
+    db_path = r"DATA3463-MiniProject2\olympics.db"
+    conn = sqlite3.connect(db_path)
+    df.to_sql('podium', conn, if_exists='replace', index=False)
+    conn.close()
+    print(f"Saved {len(df)} athletes to {db_path}")
 
 if __name__ == '__main__':
     Podium()
