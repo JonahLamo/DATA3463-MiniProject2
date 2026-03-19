@@ -8,10 +8,10 @@ import sqlite3
 YEARS = [2010, 2014, 2018, 2022, 2026]
 
 def AthletesResults():
-    db_path = r"DATA3463-MiniProject2\olympics.db"
+    db_path = r"DATA3463\DATA3463-MiniProject2\olympics.db"
     try:
         conn = sqlite3.connect(db_path)
-        podium_df = pd.read_sql('SELECT * FROM podium LIMIT 15', conn)
+        podium_df = pd.read_sql('SELECT * FROM podium', conn)
         conn.close()
     except Exception as e:
         print(f"Could not read podium table: {e}")

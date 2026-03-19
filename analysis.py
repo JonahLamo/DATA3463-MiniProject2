@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def analyze():
-    db_path = r"DATA3463-MiniProject2\olympics.db"
+def Analyze():
+    db_path = r"DATA3463\DATA3463-MiniProject2\olympics.db"
     conn = sqlite3.connect(db_path)
 
     athletes = pd.read_sql('SELECT * FROM athletes', conn)
@@ -33,7 +33,6 @@ def analyze():
     ax.set_xlabel('')
     ax.tick_params(axis='x', rotation=45)
     plt.tight_layout()
-    plt.savefig(r"DATA3463-MiniProject2\out\height_by_sport.png")
     plt.show()
 
     # GDP per capita vs medal count by country
@@ -49,7 +48,6 @@ def analyze():
     ax.set_xlabel('GDP per Capita ($)')
     ax.set_ylabel('Total Medals')
     plt.tight_layout()
-    plt.savefig(r"DATA3463-MiniProject2\out\gdp_vs_medals.png")
     plt.show()
 
     # Population vs medal count
@@ -62,7 +60,6 @@ def analyze():
     ax.set_xlabel('Population')
     ax.set_ylabel('Total Medals')
     plt.tight_layout()
-    plt.savefig(r"DATA3463-MiniProject2\out\pop_vs_medals.png")
     plt.show()
 
     # Medal count by country (top 15)
@@ -74,10 +71,9 @@ def analyze():
     ax.set_ylabel('Total Medals')
     ax.tick_params(axis='x', rotation=45)
     plt.tight_layout()
-    plt.savefig(r"DATA3463-MiniProject2\out\top_countries.png")
     plt.show()
 
-    print("Done. Charts saved to out folder.")
+    print("Done. Charts saved to figures folder.")
 
 if __name__ == '__main__':
-    analyze()
+    Analyze()
