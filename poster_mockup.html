@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Poster — Winter Olympics Medal Prediction</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #D4A843;
+    --gold-light: #F0D78C;
+    --silver: #A8B5C0;
+    --silver-light: #D0D8DE;
+    --bronze: #B87333;
+    --bronze-light: #D4A06A;
+    --ice-dark: #0B1D3A;
+    --ice-mid: #132E5B;
+    --ice-blue: #1E4D8C;
+    --ice-light: #2B6CB0;
+    --frost: #CBD5E1;
+    --snow: #F0F4F8;
+    --white: #FFFFFF;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --canada-red: #C41E3A;
+  }
+
+  body {
+    background: #2a2a2a;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  .poster {
+    width: 762px;   /* 30in at ~25.4px/in scaled for screen */
+    min-height: 1080px; /* 42in proportional */
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  /* === HEADER === */
+  .header {
+    background: linear-gradient(135deg, var(--ice-dark) 0%, var(--ice-mid) 40%, var(--ice-blue) 100%);
+    padding: 32px 36px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(212,168,67,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .header::after {
+    content: '❄';
+    position: absolute;
+    top: 12px; right: 24px;
+    font-size: 80px;
+    opacity: 0.06;
+    color: white;
+  }
+
+  /* Snowflake decorations */
+  .snowflakes {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .snowflakes span {
+    position: absolute;
+    color: rgba(255,255,255,0.04);
+    font-size: 24px;
+  }
+  .snowflakes span:nth-child(1) { top: 8px; left: 60px; font-size: 16px; }
+  .snowflakes span:nth-child(2) { top: 50px; left: 180px; font-size: 28px; }
+  .snowflakes span:nth-child(3) { bottom: 10px; right: 120px; font-size: 20px; }
+  .snowflakes span:nth-child(4) { top: 20px; right: 200px; font-size: 14px; }
+
+  .title-main {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .title-accent {
+    color: var(--gold);
+  }
+
+  .title-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--frost);
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .authors {
+    margin-top: 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    position: relative;
+    z-index: 1;
+  }
+  .authors strong {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .medal-stripe {
+    height: 5px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold) 33%, var(--silver) 33%, var(--silver) 66%, var(--bronze) 66%, var(--bronze) 100%);
+  }
+
+  /* === BODY === */
+  .body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0;
+  }
+
+  .col-left, .col-right {
+    padding: 24px 20px;
+  }
+
+  .col-left {
+    border-right: 1px solid #E2E8F0;
+  }
+
+  /* === SECTIONS === */
+  .section {
+    margin-bottom: 22px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ice-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--gold);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .section-text {
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .section-text p + p {
+    margin-top: 8px;
+  }
+
+  /* === RESEARCH QUESTION BOX === */
+  .rq-box {
+    background: linear-gradient(135deg, var(--ice-dark), var(--ice-mid));
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .rq-box::after {
+    content: '?';
+    position: absolute;
+    right: 12px; top: -4px;
+    font-size: 60px;
+    font-family: 'Playfair Display', serif;
+    color: rgba(255,255,255,0.05);
+    font-weight: 900;
+  }
+  .rq-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .rq-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--white);
+    line-height: 1.4;
+    font-weight: 700;
+  }
+
+  /* === VARIABLE TAGS === */
+  .var-group {
+    margin: 12px 0;
+  }
+  .var-group-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ice-blue);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .var-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .var-tag {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .var-tag.athlete {
+    background: rgba(30,77,140,0.1);
+    color: var(--ice-blue);
+    border: 1px solid rgba(30,77,140,0.2);
+  }
+  .var-tag.country {
+    background: rgba(212,168,67,0.12);
+    color: var(--bronze);
+    border: 1px solid rgba(212,168,67,0.25);
+  }
+
+  /* === PODIUM === */
+  .podium-section {
+    background: linear-gradient(180deg, var(--snow) 0%, var(--white) 100%);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 14px 0;
+    border: 1px solid #E2E8F0;
+  }
+
+  .podium-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ice-dark);
+    margin-bottom: 18px;
+  }
+
+  .podium {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+    height: 200px;
+    padding-bottom: 0;
+  }
+
+  .podium-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+  }
+
+  .podium-factor {
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-align: center;
+    padding: 6px 4px;
+    margin-bottom: 6px;
+    color: var(--ice-dark);
+    line-height: 1.3;
+  }
+
+  .podium-icon {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .podium-block {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 12px;
+    position: relative;
+  }
+
+  .podium-rank {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .podium-block.gold {
+    height: 110px;
+    background: linear-gradient(180deg, var(--gold) 0%, #B8922E 100%);
+    box-shadow: 0 -4px 20px rgba(212,168,67,0.3);
+  }
+  .podium-block.silver {
+    height: 82px;
+    background: linear-gradient(180deg, var(--silver) 0%, #8A98A5 100%);
+    box-shadow: 0 -4px 20px rgba(168,181,192,0.3);
+  }
+  .podium-block.bronze {
+    height: 60px;
+    background: linear-gradient(180deg, var(--bronze) 0%, #96602A 100%);
+    box-shadow: 0 -4px 20px rgba(184,115,51,0.3);
+  }
+
+  /* === STAT CALLOUTS === */
+  .stats-row {
+    display: flex;
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .stat-card {
+    flex: 1;
+    background: var(--snow);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+  }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--ice-dark);
+  }
+  .stat-number.gold-text { color: var(--gold); }
+  .stat-number.red-text { color: var(--canada-red); }
+  .stat-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
+  /* === CHART PLACEHOLDER === */
+  .chart-placeholder {
+    background: var(--snow);
+    border: 2px dashed #CBD5E1;
+    border-radius: 8px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-style: italic;
+  }
+
+  /* === CANADA HIGHLIGHT === */
+  .canada-box {
+    background: linear-gradient(135deg, #FEF2F2, #FFFFFF);
+    border-left: 4px solid var(--canada-red);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin: 14px 0;
+  }
+  .canada-box .rq-label {
+    color: var(--canada-red);
+  }
+
+  /* === RECOMMENDATIONS === */
+  .rec-list {
+    list-style: none;
+    margin: 10px 0;
+  }
+  .rec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #F1F5F9;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .rec-item:last-child { border-bottom: none; }
+  .rec-num {
+    width: 22px; height: 22px;
+    background: var(--ice-dark);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* === TABLE === */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 10.5px;
+  }
+  .data-table th {
+    background: var(--ice-dark);
+    color: var(--white);
+    padding: 6px 8px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .data-table td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #E2E8F0;
+    color: var(--text-secondary);
+  }
+  .data-table tr:nth-child(even) td {
+    background: var(--snow);
+  }
+
+  /* === FOOTER === */
+  .footer {
+    background: var(--ice-dark);
+    padding: 16px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  .footer-left {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer-qr {
+    width: 52px; height: 52px;
+    background: var(--white);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 4px;
+  }
+  .footer-link {
+    font-size: 10px;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .footer-link span {
+    display: block;
+    font-size: 8px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 400;
+    margin-bottom: 2px;
+  }
+
+  /* mountain silhouette */
+  .mountain-divider {
+    height: 30px;
+    background: var(--ice-dark);
+    clip-path: polygon(0% 100%, 5% 40%, 12% 70%, 20% 20%, 28% 60%, 35% 10%, 42% 50%, 50% 0%, 58% 50%, 65% 15%, 72% 55%, 80% 25%, 88% 65%, 95% 35%, 100% 100%);
+    opacity: 0.04;
+    margin: 0 -20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="snowflakes">
+      <span>❄</span><span>❄</span><span>❄</span><span>❄</span>
+    </div>
+    <div class="title-main">
+      Predicting Winter Olympic Medal Success:<br>
+      <span class="title-accent">Athlete &amp; Country Characteristics</span>
+    </div>
+    <div class="title-sub">
+      A Data-Driven Approach to Improving Canada's Medal Count
+    </div>
+    <div class="authors">
+      <strong>Your Name</strong> &nbsp;|&nbsp; Department / Program &nbsp;|&nbsp; University Name &nbsp;|&nbsp; your.email@university.ca
+    </div>
+  </div>
+  <div class="medal-stripe"></div>
+
+  <!-- BODY -->
+  <div class="body">
+    <!-- LEFT COLUMN -->
+    <div class="col-left">
+
+      <div class="section">
+        <div class="section-title">Introduction</div>
+        <div class="section-text">
+          <p>The Winter Olympic Games represent the pinnacle of athletic performance in cold-weather sports. Success at these games is influenced by a complex interplay of athlete-level and country-level characteristics. Understanding these factors can inform national sports development strategies.</p>
+          <p>This study examines how individual athlete attributes and national socioeconomic indicators correspond with medal outcomes, with a specific focus on actionable insights for improving Canada's competitive position.</p>
+        </div>
+
+        <div class="rq-box">
+          <div class="rq-label">Research Question</div>
+          <div class="rq-text">Which athlete and country characteristics are most predictive of Winter Olympic medal success, and how can Canada leverage these insights to improve its medal count?</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Methods &amp; Data</div>
+        <div class="section-text">
+          <p>Data were acquired from [your sources] covering Winter Olympic results from [year range]. The dataset includes athlete demographics and national economic indicators for all participating countries.</p>
+        </div>
+
+        <div class="var-group">
+          <div class="var-group-label">Athlete Variables</div>
+          <div class="var-tags">
+            <span class="var-tag athlete">Age</span>
+            <span class="var-tag athlete">Height</span>
+            <span class="var-tag athlete">Weight</span>
+            <span class="var-tag athlete">Birth City</span>
+          </div>
+        </div>
+        <div class="var-group">
+          <div class="var-group-label">Country Variables</div>
+          <div class="var-tags">
+            <span class="var-tag country">Population</span>
+            <span class="var-tag country">GDP</span>
+            <span class="var-tag country">GDP per Capita</span>
+          </div>
+        </div>
+
+        <div class="section-text" style="margin-top: 10px;">
+          <p>Analytical methods included [e.g., logistic regression, random forest, correlation analysis]. Model performance was evaluated using [metrics].</p>
+        </div>
+
+        <div class="chart-placeholder">
+          📊 &nbsp; Insert: Data pipeline / methodology diagram
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">References</div>
+        <div class="section-text" style="font-size: 9.5px; line-height: 1.5; color: #94A3B8;">
+          [1] Author, A. (Year). Title of paper. <em>Journal Name</em>, Vol(Issue), pp–pp.<br>
+          [2] Author, B. (Year). Title of paper. <em>Journal Name</em>, Vol(Issue), pp–pp.<br>
+          [3] Author, C. (Year). Title of paper. <em>Journal Name</em>, Vol(Issue), pp–pp.<br>
+          [4] International Olympic Committee. (Year). Historical Results Database.<br>
+          [5] World Bank. (Year). World Development Indicators.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-right">
+
+      <div class="section">
+        <div class="section-title">Key Results</div>
+
+        <div class="podium-section">
+          <div class="podium-title">Top Predictors of Medal Success</div>
+          <div class="podium">
+            <div class="podium-step">
+              <div class="podium-factor">GDP per<br>Capita</div>
+              <div class="podium-icon">🥈</div>
+              <div class="podium-block silver">
+                <div class="podium-rank">2</div>
+              </div>
+            </div>
+            <div class="podium-step">
+              <div class="podium-factor">[Top<br>Factor]</div>
+              <div class="podium-icon">🥇</div>
+              <div class="podium-block gold">
+                <div class="podium-rank">1</div>
+              </div>
+            </div>
+            <div class="podium-step">
+              <div class="podium-factor">Athlete<br>Age</div>
+              <div class="podium-icon">🥉</div>
+              <div class="podium-block bronze">
+                <div class="podium-rank">3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-number">XX%</div>
+            <div class="stat-label">Model Accuracy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number gold-text">X.XX</div>
+            <div class="stat-label">Top Coefficient</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number red-text">🇨🇦 #X</div>
+            <div class="stat-label">Canada Rank</div>
+          </div>
+        </div>
+
+        <div class="chart-placeholder">
+          📈 &nbsp; Insert: Feature importance / correlation chart
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Discussion</div>
+        <div class="section-text">
+          <p>The analysis reveals that [top factor] is the strongest predictor of Winter Olympic medal outcomes. This aligns with / challenges existing literature suggesting that [insight].</p>
+          <p>Country-level economic indicators, particularly GDP per capita, play a significant role — likely reflecting investment in sports infrastructure, training facilities, and athlete support programs.</p>
+        </div>
+
+        <div class="canada-box">
+          <div class="rq-label">Canada's Position</div>
+          <div class="section-text">
+            Canada currently [performs well in / underperforms in] key areas. While [strength], there is room for improvement in [area], where top-performing nations like [country] invest significantly more.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Recommendations for Canada</div>
+        <ul class="rec-list">
+          <li class="rec-item">
+            <div class="rec-num">1</div>
+            <div>[Your first recommendation based on findings — e.g., targeted investment in specific age demographics for athlete development pipelines]</div>
+          </li>
+          <li class="rec-item">
+            <div class="rec-num">2</div>
+            <div>[Second recommendation — e.g., expanding talent identification in underrepresented birth regions]</div>
+          </li>
+          <li class="rec-item">
+            <div class="rec-num">3</div>
+            <div>[Third recommendation — e.g., benchmarking funding models against top GDP/capita nations]</div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mountain-divider"></div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="medal-stripe"></div>
+  <div class="footer">
+    <div class="footer-left">
+      Data Sources: [Olympic Database, World Bank, etc.]<br>
+      Presented at [Conference / Course Name] — [Date]
+    </div>
+    <div class="footer-right">
+      <div>
+        <div class="footer-link">
+          <span>Portfolio</span>
+          yourwebsite.com
+        </div>
+      </div>
+      <div class="footer-qr">
+        QR<br>Code<br>Here
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
