@@ -10,8 +10,8 @@ import seaborn as sns
 from pathlib import Path
 
 # Configuration
-DB_PATH = r"DATA3463-MiniProject2\olympics.db"
-FIG_DIR = Path(r"DATA3463-MiniProject2\figures")
+DB_PATH = r"DATA3463\DATA3463-MiniProject2\olympics.db"
+FIG_DIR = Path(r"DATA3463\DATA3463-MiniProject2\figures")
 FIG_DIR.mkdir(exist_ok=True)
 
 # Olympic medal palette
@@ -374,7 +374,7 @@ def fig_r2_heatmap(df, countries):
         r"$\log_{10}(\text{GDP})$": ("log_gdp", "medals"),
         r"$\log_{10}(\text{Pop})$": ("log_pop", "medals"),
         "GDP per Capita": ("gdpPerCapita", "medals"),
-        "GDP/cap / Medals/cap": ("gdpPerCapita", "medals_per_M"),
+        "GDP per Capita vs Medals per Million": ("gdpPerCapita", "medals_per_M"),
     }
 
     records = []
