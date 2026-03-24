@@ -18,7 +18,7 @@ SILVER = "#A8A9AD"
 BRONZE = "#CD7F32"
 MUTED = "#BFC5CE"
 DARK = "#2C3E50"
-BG = "#FAFBFC"
+BG = "#FFFFFF"
 GRID_CLR = "#E0E4E8"
 
 TOP_N = 8
@@ -97,7 +97,9 @@ def fig_gdp_percap_timeseries(df, countries):
                  fontsize=14, fontweight="bold", pad=12)
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
-    ax.legend(h1 + h2, l1 + l2, loc="upper right", fontsize=9)
+    ax.legend(h1 + h2, l1 + l2, loc="upper center",
+              bbox_to_anchor=(0.5, -0.18), ncol=2, fontsize=9)
+    fig.subplots_adjust(bottom=0.22)
     ax.spines["top"].set_visible(False)
     ax2.spines["top"].set_visible(False)
     save(fig, "01_gdp_percap_vs_medals")
@@ -160,7 +162,7 @@ def fig_height_weight_profile(df):
         ax1.plot([155, val], [i, i], color=MUTED, linewidth=0.8, zorder=1)
     ax1.set_xlim(155, 185)
     ax1.set_yticks(y_pos)
-    ax1.set_yticklabels(order, fontsize=9)
+    ax1.set_yticklabels(order, fontsize=11)
     ax1.set_xlabel("Mean Height (cm)")
     ax1.set_title("Height", fontsize=11, fontweight="bold")
 
